@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>E-LOTOTO Lock System Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-number {
+            font-size: 3em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            font-size: 1.1em;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .locked { color: #e74c3c; }
+        .unlocked { color: #27ae60; }
+        .total { color: #3498db; }
+
+        .controls-section {
+            padding: 30px;
+            background: white;
+        }
+
+        .controls-title {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .control-form {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #e9ecef;
+        }
+
+        .form-group h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-size: 1.3em;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #555;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        .input-group input:focus {
+            outline: none;
+            border-color: #3498db;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-lock {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .btn-lock:hover {
+            background: linear-gradient(135deg, #c0392b, #a93226);
+            transform: translateY(-2px);
+        }
+
+        .btn-unlock {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .btn-unlock:hover {
+            background: linear-gradient(135deg, #229954, #1e8449);
+            transform: translateY(-2px);
+        }
+
+        .btn-monitor {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            margin: 20px auto;
+            display: block;
+            max-width: 300px;
+        }
+
+        .btn-monitor:hover {
+            background: linear-gradient(135deg, #2980b9, #21618c);
+            transform: translateY(-2px);
+        }
+
+        .users-grid {
+            padding: 30px;
+            background: #f8f9fa;
+        }
+
+        .users-title {
+            font-size: 1.8em;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            text-align: center;
+        }
+
+        .user-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .user-card {
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .user-locked {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            color: white;
+        }
+
+        .user-unlocked {
+            background: linear-gradient(135deg, #27ae60, #229954);
+            color: white;
+        }
+
+        .user-card:hover {
+            transform: scale(1.05);
+        }
+
+        .response-area {
+            padding: 30px;
+            background: white;
+        }
+
+        .response-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+
+        .response-text {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3498db;
+            font-family: monospace;
+            white-space: pre-wrap;
+            min-height: 100px;
+        }
+
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .status-online { background-color: #27ae60; }
+        .status-offline { background-color: #e74c3c; }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2em;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                padding: 20px;
+            }
+            
+            .control-form {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔐 E-LOTOTO</h1>
+            <p>Lock System Dashboard - PT Solusi Bangun Indonesia</p>
+            <p><span class="status-indicator status-online"></span>System Status: Online</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number locked" id="lockedCount">0</div>
+                <div class="stat-label">Locked Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number unlocked" id="unlockedCount">999</div>
+                <div class="stat-label">Unlocked Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number total" id="totalCount">999</div>
+                <div class="stat-label">Total Users</div>
+            </div>
+        </div>
+
+        <div class="controls-section">
+            <h2 class="controls-title">System Controls</h2>
+            <div class="control-form">
+                <div class="form-group">
+                    <h3>🔒 Lock User</h3>
+                    <div class="input-group">
+                        <label for="lockUser">User Number:</label>
+                        <input type="number" id="lockUser" min="1" max="999" placeholder="Enter user number">
+                    </div>
+                    <div class="input-group">
+                        <label for="lockPassword">Password:</label>
+                        <input type="password" id="lockPassword" placeholder="Enter password">
+                    </div>
+                    <button class="btn btn-lock" onclick="lockUser()">Lock User</button>
+                </div>
+
+                <div class="form-group">
+                    <h3>🔓 Unlock User</h3>
+                    <div class="input-group">
+                        <label for="unlockUser">User Number:</label>
+                        <input type="number" id="unlockUser" min="1" max="999" placeholder="Enter user number">
+                    </div>
+                    <div class="input-group">
+                        <label for="unlockPassword">Password:</label>
+                        <input type="password" id="unlockPassword" placeholder="Enter password">
+                    </div>
+                    <button class="btn btn-unlock" onclick="unlockUser()">Unlock User</button>
+                </div>
+            </div>
+            
+            <button class="btn btn-monitor" onclick="monitorUsers()">🖥️ Monitor All Users</button>
+        </div>
+
+        <div class="users-grid">
+            <h2 class="users-title">User Status Overview</h2>
+            <div class="user-grid" id="userGrid">
+                <!-- Users will be populated here -->
+            </div>
+        </div>
+
+        <div class="response-area">
+            <h3 class="response-title">System Response</h3>
+            <div class="response-text" id="responseText">Ready to execute commands...</div>
+        </div>
+    </div>
+
+    <script>
+        // Simulate user data - in real implementation, this would come from the ESP8266
+        let userStates = {};
+        let totalUsers = 999;
+        
+        // Initialize user states (all unlocked by default)
+        for (let i = 1; i <= totalUsers; i++) {
+            userStates[i] = false; // false = unlocked, true = locked
+        }
+
+        // Update statistics
+        function updateStats() {
+            const locked = Object.values(userStates).filter(state => state).length;
+            const unlocked = totalUsers - locked;
+            
+            document.getElementById('lockedCount').textContent = locked;
+            document.getElementById('unlockedCount').textContent = unlocked;
+            document.getElementById('totalCount').textContent = totalUsers;
+        }
+
+        // Update user grid display
+        function updateUserGrid() {
+            const userGrid = document.getElementById('userGrid');
+            userGrid.innerHTML = '';
+            
+            // Show only first 100 users for performance
+            for (let i = 1; i <= Math.min(100, totalUsers); i++) {
+                const userCard = document.createElement('div');
+                userCard.className = `user-card ${userStates[i] ? 'user-locked' : 'user-unlocked'}`;
+                userCard.textContent = `User ${i}`;
+                userCard.onclick = () => showUserDetails(i);
+                userGrid.appendChild(userCard);
+            }
+        }
+
+        // Show user details
+        function showUserDetails(userNumber) {
+            const status = userStates[userNumber] ? 'LOCKED' : 'UNLOCKED';
+            const response = `User ${userNumber} - Status: ${status}`;
+            document.getElementById('responseText').textContent = response;
+        }
+
+        // Lock user function
+        function lockUser() {
+            const userNumber = parseInt(document.getElementById('lockUser').value);
+            const password = document.getElementById('lockPassword').value;
+            
+            if (!userNumber || !password) {
+                document.getElementById('responseText').textContent = 'Error: Please enter both user number and password.';
+                return;
+            }
+            
+            if (userNumber < 1 || userNumber > totalUsers) {
+                document.getElementById('responseText').textContent = `Error: User number must be between 1 and ${totalUsers}.`;
+                return;
+            }
+            
+            // Simulate API call to ESP8266
+            simulateESP8266Command(`lock${userNumber},${password}`);
+            
+            // Clear form
+            document.getElementById('lockUser').value = '';
+            document.getElementById('lockPassword').value = '';
+        }
+
+        // Unlock user function
+        function unlockUser() {
+            const userNumber = parseInt(document.getElementById('unlockUser').value);
+            const password = document.getElementById('unlockPassword').value;
+            
+            if (!userNumber || !password) {
+                document.getElementById('responseText').textContent = 'Error: Please enter both user number and password.';
+                return;
+            }
+            
+            if (userNumber < 1 || userNumber > totalUsers) {
+                document.getElementById('responseText').textContent = `Error: User number must be between 1 and ${totalUsers}.`;
+                return;
+            }
+            
+            // Simulate API call to ESP8266
+            simulateESP8266Command(`unlock${userNumber},${password}`);
+            
+            // Clear form
+            document.getElementById('unlockUser').value = '';
+            document.getElementById('unlockPassword').value = '';
+        }
+
+        // Monitor users function
+        function monitorUsers() {
+            const lockedUsers = [];
+            for (let i = 1; i <= totalUsers; i++) {
+                if (userStates[i]) {
+                    lockedUsers.push(i);
+                }
+            }
+            
+            let response;
+            if (lockedUsers.length > 0) {
+                response = `Locked users: ${lockedUsers.slice(0, 10).join(', ')}`;
+                if (lockedUsers.length > 10) {
+                    response += ` ... and ${lockedUsers.length - 10} more`;
+                }
+            } else {
+                response = 'No users are currently locked.';
+            }
+            
+            document.getElementById('responseText').textContent = response;
+        }
+
+        // Simulate ESP8266 command response
+        function simulateESP8266Command(command) {
+            const responseText = document.getElementById('responseText');
+            responseText.textContent = 'Sending command to ESP8266...';
+            
+            setTimeout(() => {
+                if (command.startsWith('lock')) {
+                    const userNumber = parseInt(command.match(/\d+/)[0]);
+                    if (userStates[userNumber]) {
+                        responseText.textContent = `User ${userNumber} is already locked.`;
+                    } else {
+                        userStates[userNumber] = true;
+                        responseText.textContent = `User ${userNumber} ✅ LOCKED successfully.`;
+                        updateStats();
+                        updateUserGrid();
+                    }
+                } else if (command.startsWith('unlock')) {
+                    const userNumber = parseInt(command.match(/\d+/)[0]);
+                    if (!userStates[userNumber]) {
+                        responseText.textContent = `User ${userNumber} is not locked.`;
+                    } else {
+                        userStates[userNumber] = false;
+                        responseText.textContent = `User ${userNumber} ⭕ UNLOCKED successfully.`;
+                        updateStats();
+                        updateUserGrid();
+                    }
+                }
+            }, 1000);
+        }
+
+        // Auto-refresh function (simulate real-time updates)
+        function autoRefresh() {
+            // In real implementation, this would fetch data from ESP8266
+            // For now, we'll just update the display
+            updateStats();
+            updateUserGrid();
+        }
+
+        // Initialize dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            updateStats();
+            updateUserGrid();
+            
+            // Set up auto-refresh every 5 seconds
+            setInterval(autoRefresh, 5000);
+        });
+
+        // Handle Enter key press in forms
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const activeElement = document.activeElement;
+                if (activeElement.id === 'lockUser' || activeElement.id === 'lockPassword') {
+                    lockUser();
+                } else if (activeElement.id === 'unlockUser' || activeElement.id === 'unlockPassword') {
+                    unlockUser();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
